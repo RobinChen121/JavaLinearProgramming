@@ -60,7 +60,7 @@ public class SingleItemCplexLs {
 			IloLinearNumExpr holdCost = cplex.linearNumExpr();
 			IloNumExpr[] variCost = new IloNumExpr[T];
 			IloNumExpr totalCost = null;
-			IloNumExpr[] Q = new IloNumExpr[T];
+			IloNumExpr[] Q = new IloNumExpr[T]; // ordering quantity
 			setupCost.addTerms(s, x);
 			holdCost.addTerms(h, stock);
 			for (int i = 0; i < T; i++) {
