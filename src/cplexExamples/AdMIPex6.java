@@ -22,6 +22,8 @@
  *               extension.
  * Example:
  *     java AdMIPex6  mexample.mps.gz
+ *     
+ *     can solve MipRS problems
  */
 package cplexExamples;
 import ilog.concert.*;
@@ -63,7 +65,7 @@ public class AdMIPex6 {
 
          cplex.delete(relax);
        
-	 cplex.setParam(IloCplex.Param.MIP.Strategy.Search, IloCplex.MIPSearch.Traditional);
+	 cplex.setParam(IloCplex.Param.MIP.Strategy.Search, IloCplex.MIPSearch.Traditional); // use the traditional branch-and-cut search
          if ( cplex.solve() ) {
             System.out.println("Solution status = " + cplex.getStatus());
             System.out.println("Solution value  = " + cplex.getObjValue());
