@@ -27,7 +27,8 @@ public class MIPex1 {
          IloRange[][]  rng = new IloRange[1][];
  
          populateByRow(cplex, var, rng);
- 
+         IloLPMatrix lp = (IloLPMatrix) cplex.LPMatrixIterator().next();
+         
          if ( cplex.solve() ) {
             double[] x     = cplex.getValues(var[0]);
             double[] slack = cplex.getSlacks(rng[0]);

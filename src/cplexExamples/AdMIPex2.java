@@ -45,7 +45,7 @@ public class AdMIPex2 {
                x[j] = 0.0;
             }
          }
-         setSolution(_vars, x, objval);
+         setSolution(_vars, x, objval); // set value for an infeasible solution during computing
       }
    }
 

@@ -61,7 +61,9 @@ public class LPex1 {
          }
 
          // write model to file
-         cplex.exportModel("lpex1.lp");
+         //cplex.exportModel("lpex1.lp");
+         cplex.importModel("lpex1.lp");
+         IloLPMatrix lp = (IloLPMatrix)cplex.LPMatrixIterator().next();
 
          // solve the model and display the solution if one was found
          if ( cplex.solve() ) {
@@ -165,8 +167,8 @@ public class LPex1 {
       IloNumVar[] x  = model.numVarArray(3, lb, ub);
       var[0] = x;
 
-      double[] objvals = {1.0, 2.0, 3.0};
-      model.add(model.maximize(model.scalProd(x, objvals)));
+      double[] objvals = {-1.0, -2.0, -3.0};
+      model.add(model.minimize(model.scalProd(x, objvals)));
 
       rng[0] = new IloRange[2];
       rng[0][0] = model.addRange(-Double.MAX_VALUE, 20.0);

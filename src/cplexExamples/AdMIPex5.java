@@ -30,6 +30,27 @@ public class AdMIPex5 {
    // formulation.  Use a lazy constraint callback when the added constraints
    // remove part of the feasible region.  Use a cut callback when you
    // are not certain.
+	
+	// Add the following valid cuts for the noswot model via cut callback:
+	//
+	//  cut1: X21 - X22 <= 0
+	//  cut2: X22 - X23 <= 0
+	//  cut3: X23 - X24 <= 0
+	//  cut4: 2.08 X11 + 2.98 X21 + 3.47 X31 + 2.24 X41 + 2.08 X51
+	//      + 0.25 W11 + 0.25 W21 + 0.25 W31 + 0.25 W41 + 0.25 W51
+	//        <= 20.25
+	//  cut5: 2.08 X12 + 2.98 X22 + 3.47 X32 + 2.24 X42 + 2.08 X52
+	//      + 0.25 W12 + 0.25 W22 + 0.25 W32 + 0.25 W42 + 0.25 W52
+	//        <= 20.25
+	//  cut6: 2.08 X13 + 2.98 X23 + 3.4722 X33 + 2.24 X43 + 2.08 X53
+	//      + 0.25 W13 + 0.25 W23 + 0.25 W33 + 0.25 W43 + 0.25 W53
+	//        <= 20.25
+	//  cut7: 2.08 X14 + 2.98 X24 + 3.47 X34 + 2.24 X44 + 2.08 X54
+	//      + 0.25 W14 + 0.25 W24 + 0.25 W34 + 0.25 W44 + 0.25 W54
+	//        <= 20.25
+	//  cut8: 2.08 X15 + 2.98 X25 + 3.47 X35 + 2.24 X45 + 2.08 X55
+	//      + 0.25 W15 + 0.25 W25 + 0.25 W35 + 0.25 W45 + 0.25 W55
+	//        <= 16.25
 
    public static class Callback extends IloCplex.UserCutCallback {
       double     eps = 1.0e-6;
@@ -43,7 +64,7 @@ public class AdMIPex5 {
             if ( thecut != null ) {
                double val = getValue(thecut.getExpr());
                if ( thecut.getLB() > val+eps || val-eps > thecut.getUB() ) {
-                  add(thecut, IloCplex.CutManagement.UseCutForce);
+                  add(thecut, IloCplex.CutManagement.UseCutForce); // add cuts when the cuts are not followed by present candidates
                   cut[i] = null;
                }
             }
@@ -184,13 +205,15 @@ public class AdMIPex5 {
       try {
          IloCplex cplex = new IloCplex();
        
-         cplex.importModel("../../../examples/data/noswot.mps");
+         cplex.importModel("noswot.mps");
          IloLPMatrix lp = (IloLPMatrix)cplex.LPMatrixIterator().next();
-       
+         IloNumVar[] vars = ((IloLPMatrix)cplex.LPMatrixIterator().next()).getNumVars();
+         
          cplex.use(new Callback(makeCuts(cplex, lp)));
        
-         cplex.setParam(IloCplex.Param.MIP.Interval, 1000);
-	 cplex.setParam(IloCplex.Param.MIP.Strategy.Search, IloCplex.MIPSearch.Traditional);
+         cplex.setParam(IloCplex.Param.MIP.Interval, 1000); // frequency of logging information
+         cplex.setParam(IloCplex.Param.MIP.Strategy.Search, IloCplex.MIPSearch.Traditional);
+         cplex.setParam(IloCplex.Param.MIP.Display, 3); // default value is 2
          if ( cplex.solve() ) {
             System.out.println("Solution status = " + cplex.getStatus());
             System.out.println("Solution value  = " + cplex.getObjValue());
